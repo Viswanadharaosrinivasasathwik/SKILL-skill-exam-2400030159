@@ -23,7 +23,7 @@ services:
       - microservices-network
 
   exam-service:
-    image: docker-skill-exam-2400030159:latest
+    image: srinivasasathwik2006-skill-exam-2400030159:latest
     build:
       context: ./SOA-Task
       dockerfile: Dockerfile
