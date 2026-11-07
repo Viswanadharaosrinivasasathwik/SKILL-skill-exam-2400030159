@@ -9,8 +9,6 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: admin123
       POSTGRES_DB: skill_exam_2400030159
-    ports:
-      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -23,7 +21,7 @@ services:
       - microservices-network
 
   exam-service:
-    image: srinivasasathwik2006-skill-exam-2400030159:latest
+    image: srinivasasathwik2006/soa-skill-exam-2400030159:latest
     build:
       context: ./SOA-Task
       dockerfile: Dockerfile
@@ -31,11 +29,27 @@ services:
     ports:
       - "2006:2006"
     environment:
-      - DB_HOST=postgresdb
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresdb:5432/skill_exam_2400030159
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgresdb:5432/skill_exam_2400030159
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: admin123
+      DB_HOST: postgresdb
     depends_on:
       postgresdb:
         condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - microservices-network
+
+  frontend:
+    image: srinivasasathwik2006/ticket-frontend-2400030159:latest
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: ticket-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - exam-service
     restart: unless-stopped
     networks:
       - microservices-network
